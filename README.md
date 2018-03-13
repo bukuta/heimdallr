@@ -1,9 +1,20 @@
-# mock-console
-|
+# Heimdallr
+
+> This is a project same as swaggerui, with additional support of sorting and filtering
+> Make life better
 
 ## Environment
 
-`Node >= 6`
+`Node >= 8`
+
+## usage
+```bash
+heimdallr preview dist/index.json # cli alone
+
+let heimdallr = require('heimdallr');
+let p = heimdallr.getStaticPath();
+app.use('/preview',express.staticMiddleware(p));
+```
 
 ## Start
 

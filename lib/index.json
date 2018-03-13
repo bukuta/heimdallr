@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": 1,
+    "title": "bbb.title.123.222",
+    "description": "description\n"
+  },
+  "servers": [
+    {
+      "description": "local mock",
+      "name": "local_mock",
+      "url": "/api/v1"
+    }
+  ],
+  "x-baseurl": "/api/v1",
+  "paths": {
+    "/admins": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "description": "fetch admins",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "$ref": "#/components/schemas/TOTAL"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Admin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "description": "create admin",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "Object",
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "管理员",
+                "x-$proto": "#/components/x-protos/admin.proto",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "名字",
+                    "x-p-index": 2,
+                    "x-p-type": "string",
+                    "x-mock": "@word"
+                  },
+                  "cname": {
+                    "type": "string",
+                    "description": "中文名",
+                    "x-p-index": 3,
+                    "x-mock": "@cname"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码",
+                    "x-mock": ""
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "用户目前的状态(0允许/1禁止/2锁定)",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "x-mock": "0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/{adminId}": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "description": "fetch admin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "ID of admin",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "x-mock": "@integer(0,1000)"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admins"
+        ],
+        "description": "update admin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "ID of Admin",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "x-mock": "@integer(0,1000)"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "管理员",
+                "x-$proto": "#/components/x-protos/admin.proto",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "名字",
+                    "x-p-index": 2,
+                    "x-p-type": "string",
+                    "x-mock": "@word"
+                  },
+                  "cname": {
+                    "type": "string",
+                    "description": "中文名",
+                    "x-p-index": 3,
+                    "x-mock": "@cname"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码",
+                    "x-mock": ""
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "用户目前的状态(0允许/1禁止/2锁定)",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "x-mock": "0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "description": "delete admin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "ID of admin",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "x-mock": "@integer(0,1000)"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        }
+      }
+    },
+    "/session": {
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "createSession",
+        "summary": "create session of a user",
+        "description": "用户登录",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "account": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "Object",
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "405": {
+            "description": "Invalid Input"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "destroySession",
+        "summary": "destroy session of a user",
+        "description": "用户登出",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "fetch User",
+        "description": "fetch User",
+        "operationId": "fetchUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Admin": {
+        "type": "object",
+        "description": "管理员",
+        "x-$proto": "#/components/x-protos/admin.proto",
+        "properties": {
+          "id": {
+            "description": "ID",
+            "x-p-index": 1,
+            "$ref": "#/components/schemas/ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "名字",
+            "x-p-index": 2,
+            "x-p-type": "string",
+            "x-mock": "@word"
+          },
+          "cname": {
+            "type": "string",
+            "description": "中文名",
+            "x-p-index": 3,
+            "x-mock": "@cname"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码",
+            "x-mock": ""
+          },
+          "status": {
+            "type": "integer",
+            "description": "用户目前的状态(0允许/1禁止/2锁定)",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "x-mock": "0"
+          },
+          "creator": {
+            "x-$ref": "#/components/schemas/Admin",
+            "$ref": "#/components/schemas/ID"
+          },
+          "createAt": {
+            "type": "string",
+            "format": "date-time",
+            "x-mock": "@datetime"
+          },
+          "updateAt": {
+            "type": "string",
+            "format": "date-time",
+            "x-mock": "@datetime"
+          }
+        }
+      },
+      "ID": {
+        "type": "integer",
+        "x-p-type": "int32",
+        "x-mock": "@integer(0,100000)"
+      },
+      "TOTAL": {
+        "type": "integer",
+        "x-p-type": "int32",
+        "x-mock": "@integer(10,100)"
+      },
+      "COMMITID": {
+        "type": "string",
+        "x-p-type": "string",
+        "x-mock": "@string"
+      },
+      "ActionType": {
+        "type": "string",
+        "description": "动作类型",
+        "enum": [
+          "TEST",
+          "BUILD",
+          "PREVIEW",
+          "PUBLISH",
+          "OTHER"
+        ]
+      },
+      "TaskStatus": {
+        "type": "string",
+        "description": "任务执行状态(0未执行/1执行中/2执行成功/3执行失败)",
+        "default": "Pending",
+        "enum": [
+          "Pending",
+          "Processing",
+          "Success",
+          "Fail"
+        ]
+      }
+    },
+    "requestBodies": {},
+    "responses": {}
+  },
+  "x-generations": null,
+  "tags": [
+    {
+      "name": "Admins",
+      "description": "管理员"
+    }
+  ]
+}

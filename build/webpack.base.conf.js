@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
@@ -6,6 +7,10 @@ var vueLoaderConfig = require('./vue-loader.conf')
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
+
+//let p = resolve('src/mould/src');
+//let rp = fs.realpathSync(p);
+//console.log(p,rp);
 
 module.exports = {
   entry: {
@@ -31,6 +36,12 @@ module.exports = {
       '$styles': resolve('src/admin/styles'),
       '$utils': resolve('src/admin/utils'),
       '$services': resolve('src/admin/services'),
+      '$mould': resolve('src/mm2/src'),
+      '$mouldtest': resolve('src/mm2/test'),
+      '$example': resolve('src/mm2/test/example'),
+      //'$mould': fs.realpathSync(resolve('src/mould/src')),
+      //'$mouldtest': fs.realpathSync(resolve('src/mould/test')),
+      '$src/casual': resolve('src/mould/src'),
     }
   },
   module: {
@@ -60,7 +71,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('src/mould'),resolve('test')],
+        exclude:/node_modules/,
       },
       {
         test: /\.less$/,

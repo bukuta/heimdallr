@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  version: <%=version%>
+  title: <%=title%>
+  description: |
+    <%=description%>
+servers:
+  - description: local mock
+    name: local_mock
+    url: '/api/v1'
+x-baseurl: /api/v1
+
+paths:
+components:
+  schemas:
+  requestBodies:
+x-generations:

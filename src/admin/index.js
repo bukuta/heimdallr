@@ -1,12 +1,11 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-default/index.css';
 import _ from 'lodash';
 import Vuex from 'vuex';
 import vuexModules from './config/vuexModules';
-import vuexGetters from './config/vuexGetters';
 
-import filters from './filters.js'
+import filters from './filters.js';
 for(let [name,filter] of Object.entries(filters)){
   Vue.filter(name,filter);
 }
@@ -23,7 +22,6 @@ const debug = process.env.NODE_ENV !== 'production';
 
 const store = new Vuex.Store({
   modules: vuexModules,
-  getters: vuexGetters,
   strict: debug
 });
 

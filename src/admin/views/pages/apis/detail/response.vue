@@ -13,7 +13,7 @@
       </el-col>
     </el-row>
     <div>
-      <el-row v-for="[contentType,content] of Object.entries(response.content||{})">
+      <el-row :key="contentType" v-for="[contentType,content] of Object.entries(response.content||{})">
         <el-col class="response-schema">
           <pre>{{ content.schema|codeFormat }} </pre>
       </el-col>

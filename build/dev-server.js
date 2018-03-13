@@ -1,8 +1,8 @@
-require('./check-versions')()
+require('./check-versions')();
 
-var config = require('../config')
+var config = require('../config');
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
+  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV);
 }
 
 var opn = require('opn')
@@ -32,6 +32,7 @@ var hotMiddleware = require('webpack-hot-middleware')(compiler, {
   log: false,
   heartbeat: 2000
 })
+
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function(compilation) {
   compilation.plugin('html-webpack-plugin-after-emit', function(data, cb) {
@@ -41,67 +42,6 @@ compiler.plugin('compilation', function(compilation) {
     cb()
   })
 })
-
-
-app.post('/user/login', function(req, res) {
-  res.json({
-    code: 0,
-    data: {
-      u_id: 123,
-      name: 'test-name'
-    }
-  });
-});
-app.post('/user/sendmobilecaptcha/',function(req,res){
-  res.json({
-    errno:0,
-    data:{ },
-  });
-});
-app.get('/user/logout', function(req, res) {});
-app.post('/user/getorgedgebymobile', function(req, res) {
-  res.json({
-    code: 0,
-    data: {
-      items: [
-        {
-          id: 1,
-          name: '中国石油化集团北京分公司',
-          status: '正常'
-        },
-        {
-          id: 2,
-          name: '中国石油化集团南京分公司',
-          status: '冻结'
-        },
-        {
-          id: 3,
-          name: '中国石油化集团东京分公司',
-          status: '未注册'
-        },
-        {
-          id: 4,
-          name: '中国石油化集团西京分公司',
-          status: '未授权'
-        },
-      ]
-    }
-  });
-});
-app.post('/user/selectorg', function(req, res) {
-  res.json({
-    code: 0,
-  });
-});
-app.get('/privilege/getusermenu', function(req, res) {
-  res.json({
-    code: 1,
-    data: {
-      menus: []
-    }
-  });
-});
-
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function(context) {
@@ -114,7 +54,11 @@ Object.keys(proxyTable).forEach(function(context) {
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
-// handle fallback for HTML5 history API
+// TODO add other static file router
+app.use('/lib', express.static('lib'))
+
+
+// HANDLEu FALLBACK:FORu HTML5uu HISTORY API
 app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
@@ -127,9 +71,6 @@ app.use(hotMiddleware)
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static(config.dev.staticPath))
-
-// TODO add other static file router
-app.use('/lib', express.static('src/lib'))
 
 var protocal = config.dev.https ? 'https' : 'http';
 var hostname = config.dev.host;

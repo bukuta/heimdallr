@@ -1,11 +1,9 @@
 <template>
   <div>
     <el-breadcrumb>
-      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/apis/list'}">Api List</el-breadcrumb-item>
-      <el-breadcrumb-item>Api Detail</el-breadcrumb-item>
+      <el-breadcrumb-item v-for="item of items"  :to="item.to">{{item.label}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <router-view>
+    <router-view @breadcrumb="onBreadcrumb">
     </router-view>
   </div>
 </template>
@@ -13,7 +11,15 @@
 export default{
   name:'api-base',
   data(){
-    return {};
+    return {
+      items:[],
+    };
+  },
+  methods:{
+    onBreadcrumb(items){
+      console.log('onBreadcrumb',items);
+      this.items = items;
+    },
   },
 };
 

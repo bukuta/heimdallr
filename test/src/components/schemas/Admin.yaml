@@ -1,0 +1,48 @@
+Admin:
+  type: object
+  description: 管理员
+  x-$proto: '#/components/x-protos/admin.proto'
+  properties:
+    id:
+      description: ID
+      x-p-index: 1
+      $ref: '#/components/schemas/ID'
+    name:
+      type: string
+      description: 名字
+      x-p-index: 2
+      x-p-type: string
+      x-mock: '@word'
+
+    cname:
+      type: string
+      description: 中文名
+      x-p-index: 3
+      x-mock: '@cname'
+
+    password:
+      type: string
+      description: 密码
+      x-mock: ''
+
+    status:
+      type: integer
+      description: 用户目前的状态(0允许/1禁止/2锁定)
+      enum:
+        - 0
+        - 1
+        - 2
+      x-mock: '0'
+
+    creator:
+      x-$ref: '#/components/schemas/Admin'
+      $ref: '#/components/schemas/ID'
+    createAt:
+      type: string
+      format: date-time
+      x-mock: '@datetime'
+    updateAt:
+      type: string
+      format: date-time
+      x-mock: '@datetime'
+

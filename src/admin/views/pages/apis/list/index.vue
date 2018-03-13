@@ -85,7 +85,7 @@
         >
         <template scope="scope">
           <el-row>
-            <el-col :span="18">
+            <el-col>
               <el-select :key="scope.row.method+'_'+scope.row.path" v-model="scope.row['x-server']" @change="proxyIt(scope.row)"placeholder="请选择">
                 <el-option
                   v-for="item in servers"
@@ -97,9 +97,6 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col :span='6'>
-              <el-button @click="showDetail(scope.row)">查看</el-button>
-            </el-col>
           </el-row>
         </template>
       </el-table-column>
@@ -108,6 +105,7 @@
 </template>
 
 <script>
+import {mapGetters, mapState} from 'vuex';
 
 import {escapeURI} from '$utils';
 import ApiDetail from '../detail';
@@ -120,12 +118,7 @@ export default {
   },
   data(){
     return {
-      loaded:false,
-      items:[],
-      itemsGroupByTag:{},
-      tags:[],
       methods:['GET','POST','PUT','PATCH','DELETE','HEAD','OPTION'].map(a=>a.toLowerCase()),
-      servers:[],
       tagField:'name',
       filteredItems:[],
       filters:{
@@ -135,7 +128,23 @@ export default {
       },
     };
   },
+  computed:{
+    ...mapGetters('specStore',{
+      paths:'paths',
+      itemsGroupByTag: 'tags',
+      servers: 'servers',
+    }),
+    items(){
+      return this.paths&&this.paths.items;
+    },
+    tags(){
+      return Object.keys(this.itemsGroupByTag);
+    },
+  },
   watch:{
+    'items':function(){
+      this.updateFilteredItems();
+    },
     'filters.tags':function(){
       this.updateFilteredItems();
     },
@@ -147,14 +156,17 @@ export default {
     },
   },
   mounted(){
-    this.fetchItems();
+    this.updateFilteredItems();
+    let items = [
+      {to:{path:'/'},label:'Home'},
+      {to:{path:'/apis/list'},label:'APILIST'},
+    ];
+    this.$emit('breadcrumb',items);
+    //this.fetchItems();
   },
   methods:{
     updateFilteredItems(){
-      console.warn('filteredItems',this.loaded);
-      if(!this.loaded){
-        return [];
-      }
+      console.warn('filteredItems',this.itemsGroupByTag, this.currentServer);
       let items = this.items;
       let tags = {};
       let methods={};
@@ -179,19 +191,6 @@ export default {
         return methods[item.method]
           &&item.tags&&item.tags.filter(tag=>tags[tag]).length
           &&servers[item['x-server']]
-      });
-    },
-    fetchItems(){
-      let apis = this.apis;
-      apis.fetch().then(rs=>{
-        console.log('fetchApis.',rs);
-        this.loaded=true;
-        this.items = rs.items;
-        this.filteredItems=rs.items;
-        let tags = apis.groupByTags();
-        this.itemsGroupByTag=tags;
-        this.tags = Object.keys(tags);
-        this.servers = apis.getServers();
       });
     },
     tableRowClassName(row,index){

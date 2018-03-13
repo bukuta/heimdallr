@@ -2,15 +2,15 @@ import Vue from 'vue';
 import Router from 'vue-router';
 Vue.use(Router);
 
-import authorizeService from '$app/services/authorize';
 
-import Auth, { Signin } from '$pages/auth';
 import Home from '$pages/home';
 import Generations from '$pages/generations';
 import Configs from '$pages/settings';
 
 import { routes as apiRoutes } from '$pages/apis';
 import { routes as testRoutes } from '$pages/test';
+
+//import getRoutes from '$mouldtest/example/index.js';
 
 const routes = [
   // 定义路由
@@ -20,14 +20,6 @@ const routes = [
     redirect: '/home',
     meta: {
       title: '首页-Console'
-    },
-  },
-  {
-    path: '/login',
-    component: Signin,
-    meta: {
-      title: '登录-Console',
-      menuType: 'auth'
     },
   },
   {
@@ -54,11 +46,12 @@ const routes = [
   Object.assign(apiRoutes, {
     path: '/apis'
   }),
-  Object.assign(testRoutes, {
-    path: '/test'
-  }),
+  //Object.assign(testRoutes, {
+    //path: '/test'
+  //}),
+  // getRoutes(),
   {
-    path: '/*',
+    path: '*',
     component: Home,
     beforeEnter: (to, from, next) => {
       next();
@@ -114,7 +107,7 @@ routes.map(route=>{
 });
 
 const router = new Router({ // 创建路由实例
-  mode: 'history',
+  mode: 'hash',
   routes: routes
 });
 

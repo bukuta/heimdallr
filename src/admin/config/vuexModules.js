@@ -1,6 +1,8 @@
 import Vue from 'vue';
-import userVM from '$app/view-models/user';
+import specStore from '$app/stores/spec';
+//import userVM from '$app/stores/user';
 
 export default {
-  userVM,
+  specStore,
+//  userVM,
 };

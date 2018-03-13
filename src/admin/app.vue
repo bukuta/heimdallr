@@ -1,30 +1,24 @@
 <template>
-  <el-row id="app" v-bind:class="['app','app-'+(isAuthorize?'normal':'auth')]" type='flex' justify='space-between'>
-    <nav class="top-nav" key="normal" v-if="isAuthorize">
+  <el-row id="app" v-bind:class="['app']" type='flex' justify='space-between'>
+    <nav class="top-nav" key="normal" >
       <div class="navbar-brand">
-        <span>Heimdallr</span>
+        <span>Alodi</span>
       </div>
-      <b-menu :router="true" ref="navmenu" :default-active="activeIndex" class="nav-menu" mode="horizontal"
-        @select="handleSelect">
+      <b-menu
+        v-if="spec"
+        :router="true"
+        ref="navmenu"
+        :default-active="activeIndex"
+        class="nav-menu"
+        mode="horizontal"
+        >
         <el-menu-item index="/home">Home</el-menu-item>
-        <el-submenu index="/specs">
-          <template slot="title">Api Specs</template>
-          <el-menu-item index="/apis/responses">Response Template</el-menu-item>
-        </el-submenu>
         <el-submenu index="/apis">
           <template slot="title">Apis</template>
           <el-menu-item index="/apis/list">Api list</el-menu-item>
           <el-menu-item index="/apis/tags">Tags</el-menu-item>
           <el-menu-item index="/apis/entities">Entities</el-menu-item>
         </el-submenu>
-        <el-menu-item index="/generations">Generations</el-menu-item>
-        <el-submenu index="/test">
-          <template slot="title">Test</template>
-          <el-menu-item index="/test/cases">Cases</el-menu-item>
-          <el-menu-item index="/test/schedule">Arrange&Organize</el-menu-item>
-        </el-submenu>
-        <el-menu-item index="/logs">Logs</el-menu-item>
-        <el-menu-item index="/configs">Global Settings</el-menu-item>
       </b-menu>
     </nav>
     <el-row class="main-wrapper">
@@ -39,9 +33,9 @@
 
 <script>
   import router from './router'
-  import * as types from './const/mutationTypes'
   import { Menu } from 'element-ui'
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'vuex';
+
 
   export default {
     name: 'app',
@@ -51,8 +45,14 @@
       'b-menu': {
         name: Menu.name,
         mixins: [Menu],
+        watch:{
+          '$route':function($r){
+            console.log('watch.$route',$r);
+          },
+        },
         methods: {
           getNearestIndex (path) {
+            console.log('getNearestIndex',path);
             let index = path
             let activeItem = this.items[index]
             if (activeItem) return path
@@ -70,54 +70,29 @@
 
     data () {
       return {
-        activeIndex: '1',
         curUrl: window.location.pathname || ''
       }
     },
     created () {
     },
     mounted () {
-      //  @TODO 激发此动作必须检查用户登录态
-      this.prefetchData()
-      console.log('$router.',this.$router);
-      this.$nextTick(()=>{
-        console.log('this.refs.navmenu',this.$refs.navmenu);
-        if(this.$refs.navmenu){
-          this.activeIndex = this.$refs.navmenu.getNearestIndex(this.$route.path);
-        }
-      });
-    },
-    beforeRouteEnter(to, from, next){
-      console.log('beforeRouteEnter');
-    },
-    beforeRouteUpdate (to, from, next) {
-      console.log('beforeRouteUpdate',to,from,next);
+      let path = this.$router.currentRoute.path;
+      console.log('$router',this.$router);
+      console.log('activeIndex',path);
+      this.fetchApi();
     },
     computed:{
-      ...mapGetters(['isAuthorize']),
+      ...mapState({
+        spec: state=>state.specStore.spec,
+      }),
+      activeIndex: function(){
+        let path = this.$router.currentRoute.path;
+        return path;
+      },
     },
     methods: {
-      prefetchData () {
-        // 数据预取
-        this.$store.dispatch('initdata');
-      },
-      handleSelect (key, keypath) {
-        // console.log('before navigation',key,keypath);
-        this.activeIndex = key
-      },
-      click (params) {
-        console.log('组件里面触发啦', params)
-        this.$router.push({path: params.url})
-      }
-    },
-    watch:{
-      'isAuthorize':function(value){
-        console.warn('isAuthorize.change',value);
-        if(value=='login'){
-        //  this.$router.push('/contacts/');
-        }else if(value=='logout'){
-          this.$router.push('/login/');
-        }
+      fetchApi(){
+        this.$store.dispatch('specStore/fetchApi');
       },
     },
   }

@@ -20,15 +20,15 @@
         </el-dropdown>
       </el-col>
     </el-row>
-    <el-row style="">
+    <el-row style="padding: 20px; border-bottom: 1px solid #ccc;">
       <el-col>
         {{detail.description}}
       </el-col>
     </el-row>
-    <el-row style="">
+    <el-row v-if="detail.parameters">
       <el-col> Parameters </el-col>
     </el-row>
-    <el-row style="">
+    <el-row v-if="detail.parameters">
       <el-col>
         <el-table
           :data="detail.parameters"
@@ -38,7 +38,7 @@
             >
             <template scope="scope">
               <span>
-                <span style="font-weight: bold; font-size: 20px;">{{scope.row.name}}</span>:{{scope.row.type}} <span v-if="scope.row.required" style="color:red;">*required</span>
+                <span style="font-weight: bold; font-size: 16px;">{{scope.row.name}}</span>:{{scope.row.type}} <span v-if="scope.row.required" style="color:red;">*required</span>
               </span>
             </template>
           </el-table-column>
@@ -81,12 +81,20 @@
       </el-col>
     </el-row>
     <div v-if="detail.requestBody" >
-      <el-row v-for="[contentType,content] of Object.entries(detail.requestBody.content||{})">
-        <el-col class="request-schema">
+      <el-row :key="contentType" v-for="[contentType,content] of Object.entries(detail.requestBody.content||{})">
+        <el-col :span="12" class="request-schema">
           <pre>{{ content.schema|codeFormat }} </pre>
-      </el-col>
-    </el-row>
-  </div>
+        </el-col>
+        <el-col :span="12">
+          <pre>
+            {
+            "id":123,
+            "name":"name",
+            }
+          </pre>
+        </el-col>
+      </el-row>
+    </div>
     <el-row style="">
       <el-col> Responses </el-col>
     </el-row>

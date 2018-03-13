@@ -83,7 +83,7 @@ class BaseModel extends Base {
     return this._item && this._item[this.idAttribute];
   }
   fetch() {
-    return super.fetch().then(rs => {
+    return super.fetch(...arguments).then(rs => {
       this._item = rs;
       return rs;
     });
@@ -217,44 +217,10 @@ class BaseCollection extends Base {
   }
 }
 
-class EventComments extends BaseCollection {
-  constructor(eventId) {
-    super();
-    this.url = `/events/${eventId}/replies`;
-  }
-}
-class EventConsults extends BaseCollection {
-  constructor(eventId) {
-    super();
-    this.url = `/events/${eventId}/consults`;
-  }
-}
-
-class EventAudits extends BaseCollection {
-  constructor(eventId) {
-    super();
-    this.url = `/events/${eventId}/audits`;
-  }
-}
-class Notices extends BaseCollection {
-  constructor() {
-    super();
-    this.url = `/notices`;
-  }
-}
-
 class Users extends BaseCollection {
   constructor() {
     super();
     this.url = `/users`;
-  }
-}
-
-class MailGatewayModel extends BaseModel {
-  constructor() {
-    super({
-      url: '/system/mail-gateway'
-    });
   }
 }
 
@@ -352,53 +318,20 @@ class Assist extends BaseModel {
 class Apis extends BaseModel{
   constructor(){
     super({url: '/specs'});
+    let url = new URL(location.href);
+    let jsonpath = url.searchParams.get('url');
+    if(jsonpath){
+      this.url = jsonpath;
+    }
   }
   parse(rs){
-    console.log(rs);
-    let {apis,currentServer,decorations }= rs;
-    let {servers,tags,paths}=apis;
     this._rawResponse = rs;
-    let items = [];
-    currentServer = currentServer||servers[0];
-    console.log();
-
-    for( let [path,handles] of Object.entries(paths)){
-      for( let [method, route] of Object.entries(handles)){
-        route.responses = Object.keys(route.responses).map(code=>{
-          let isSkip = methods.isSkip(decorations,path,method,code);
-          return Object.assign(route.responses[code],{code,isSkip});
-        });
-        let isSkip = methods.isSkip(decorations,path,method);
-        let server = currentServer.url;
-        let proxyEnable = false;
-        let tmp=decorations[path];
-        if(tmp){
-          if(tmp.proxy){
-            server = tmp.proxy;
-            proxyEnable=tmp.proxyEnable;
-          }else if(tmp=tmp.methods[method]){
-            if(tmp.proxy){
-              server = tmp.proxy;
-              proxyEnable=tmp.proxyEnable;
-            }
-          }
-        }
-
-        items.push(Object.assign(route,{
-          path,
-          method,
-          'x-skip':isSkip,
-          'x-server':server,
-          'x-proxyEnable':proxyEnable,
-        }));
-      }
-    }
-    return {items,total:items.length};
+    return rs;
   }
   groupByTags(){
     let tags = {};
     if(this._rawResponse){
-      this._rawResponse.apis.tags.forEach(tag=>{
+      this._rawResponse.tags.forEach(tag=>{
         tags[tag.name]=tag;
         tag.items=[];
       });
@@ -417,14 +350,14 @@ class Apis extends BaseModel{
   getServers(){
     let servers = {};
     if(this._rawResponse){
-      this._rawResponse.apis.servers.forEach(item=>{
+      this._rawResponse.servers.forEach(item=>{
         servers[item.name]=item;
       });
     }
     return servers;
   }
   getEntities(){
-    return Object.entries(this._rawResponse.apis.components.schemas).map(([k,v])=>{
+    return Object.entries(this._rawResponse.components.schemas).map(([k,v])=>{
       v.name=k;
       return v;
     });
@@ -436,7 +369,7 @@ class Apis extends BaseModel{
     if(this._rawResponse){
       return Promise.resolve(this.parse(this._rawResponse));
     }else{
-      return super.fetch(...arguments)
+      return super.fetch({...arguments,noBase:true})
     }
   }
   collectionMock(node,name){
@@ -485,29 +418,206 @@ class Apis extends BaseModel{
       body: JSON.stringify(payload),
     };
   }
+  tryRequest(path, method, detail) {
+    console.warn('tryRequest', ...arguments);
+    let params = detail.parameters || [];
+    let pmockmap = {};
+    let pmocks = params.map(param => {
+      let schema = param.schema;
+      if (schema.$ref) {
+        let node = pickNode(data, schema.$ref);
+        pmockmap[param.name] = node['x-mock'];
+        return node['x-mock'];
+      } else if (schema['x-mock']) {
+        pmockmap[param.name] = schema['x-mock'];
+        return schema['x-mock'];
+      }
+    });
+    Object.keys(pmockmap).forEach((name) => {
+      let mocktemplate = pmockmap[name];
+      let data = Mock.mock(mocktemplate);
+      pmockmap[name] = data;
+    })
+    console.warn(pmockmap);
+    let npath = path.replace(/(\{([^}]+)\})/g, function(match, p1, p2, offset, ori) {
+      return pmockmap[p2];
+    });
+    console.log(npath)
+
+    let body = detail.requestBody;
+    let bodyMock;
+    if (body) {
+      let m = collectMocksFromResponse(body, data);
+      let mock = Mock.mock(m);
+      bodyMock = JSON.stringify(mock);
+      console.log(m, mock);
+    }
+
+    // 生成请求的host=>url, method,payload, query
+    let host = this.currentServer.url
+    let url = host + npath;
+    console.warn(url);
+    var linkE = document.createElement('a');
+    linkE.href = url;
+    url = linkE.href;
+    var parsedUrl = new URL(url);
+
+    let queryObject = parsedUrl.searchParams;
+    params.forEach(param => {
+      if (param.in == 'query') {
+        if (param.schema['x-mock']) {
+          queryObject.append(param.name, pmockmap[param.name]);
+        } else if (param.default) {
+          queryObject.append(param.name, param.default);
+        }
+      }
+    });
+    console.warn('queryObject', queryObject.toString());
+
+    fetch(parsedUrl.toString(), {
+      method: method.toUpperCase(),
+      credentials: 'include',
+      body: bodyMock,
+      headers: {
+        'Accept': 'application/json,*',
+        'Content-Type': body && Object.keys(body.content)[0],
+      },
+    }).then(res => res.json()).then(res => console.log(res));
+  }
+  skipIt( /*path,method,statuscode,$event*/ ) {
+    let args = [].slice.call(arguments, 0);
+    let $event = args.pop();
+    let [path, method, statuscode] = args;
+    let checked = $event.target.checked;
+
+    console.warn(path, method, statuscode, checked);
+    fetch('/:console/skip', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json,*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        path,
+        method,
+        statuscode,
+        checked
+      })
+    }).then(res => res.json()).then(res => console.log(res));
+  }
+  isSelected(path,method,url){
+    let r ;
+    if(method){
+      r =  decorations[path] &&
+        decorations[path].methods &&
+        decorations[path].methods[method] &&
+        decorations[path].methods[method].proxyEnable&&
+        decorations[path].methods[method].proxy==url;
+    }
+    if(!r&&path){
+      r = decorations[path] &&
+        decorations[path].proxyEnable&&
+        decorations[path].proxy==url;
+    }
+    console.warn('isSelected',path,method,url,r);
+    return r;
+  }
+  isSkip(decorations,path, method, statuscode) {
+    if (statuscode) {
+      return decorations[path] &&
+        decorations[path].methods &&
+        decorations[path].methods[method] &&
+        decorations[path].methods[method].responses &&
+        decorations[path].methods[method].responses[statuscode] &&
+        decorations[path].methods[method].responses[statuscode].skip;
+    }
+    if (method) {
+      return decorations[path] &&
+        decorations[path].methods &&
+        decorations[path].methods[method] &&
+        decorations[path].methods[method].skip;
+    }
+    if (path) {
+      return decorations[path] &&
+        decorations[path].skip;
+    }
+  }
+  skipAllException() {
+    let payload = [];
+    for (let [path, route] of Object.entries(data.paths || {})) {
+      for (let [method, methoddetail] of Object.entries(route || {})) {
+        for (let [statuscode, response] of Object.entries(methoddetail.responses || {})) {
+          let r = parseInt(statuscode / 100, 10);
+          console.log(path, method, statuscode, r)
+          payload.push({
+            path,
+            method,
+            statuscode,
+            checked: r != 2
+          });
+        }
+      }
+    }
+    console.log(payload);
+    fetch('/:console/skip', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json,*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(res => res.json()).then(res => console.log(res));
+  }
+  resetAll() {
+    let payload = [];
+    for (let [path, route] of Object.entries(data.paths || {})) {
+      for (let [method, methoddetail] of Object.entries(route || {})) {
+        for (let [statuscode, response] of Object.entries(methoddetail.responses || {})) {
+          let r = parseInt(statuscode / 100, 10);
+          payload.push({
+            path,
+            method,
+            statuscode,
+            checked: false
+          });
+        }
+      }
+    }
+    console.log(payload);
+    fetch('/:console/skip', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json,*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(res => res.json()).then(res => console.log(res));
+  }
+  changeServer(event) {
+    console.log(event.target.value);
+    let servername = event.target.value;
+    let currentServer = data.servers.filter(server => server.name == servername)[0];
+
+    console.log(currentServer);
+    fetch('/:console/set-server', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json,*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(currentServer)
+    }).then(res => res.json()).then(res => console.log(res));
+  }
 }
 
 export { User, BaseModel,BaseCollection,rpc, Apis};
 
 
 let tagsmap = {};
-//data.tags.forEach(item => {
-  //tagsmap[item.name] = item;
-  //item.items=[];
-//});
-//Object.keys(data.paths).forEach(path=>{
-  //let methods = data.paths[path];
-  //Object.keys(methods).forEach(method=>{
-    //let route = methods[method];
-    ////console.log(route);
-    //let tags = route.tags;
-    //tags.forEach(tag=>{
-      ////console.log(tag);
-      //let tt = tagsmap[tag]=tagsmap[tag]||{name:tag,items:[]};
-      //tt.items.push({path,method,route});
-    //});
-  //});
-//});
 
 function getResponseObject(response,root){
   let content = response && response.content && response.content['application/json'];
@@ -720,7 +830,7 @@ let methods= {
       })
     }).then(res => res.json()).then(res => console.log(res));
   },
-  sSelected(path,method,url){
+  isSelected(path,method,url){
     let r ;
     if(method){
       r =  decorations[path] &&

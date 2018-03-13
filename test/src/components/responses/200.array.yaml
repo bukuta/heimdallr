@@ -1,0 +1,15 @@
+200.array:
+  '@isTemplate': true
+  200:
+    description: <%=typeof description=='undefined'?'OK':description%>
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            total: 
+              $ref: '#/components/schemas/TOTAL'
+            items:
+              type: array
+              items:
+                $ref: '<%=item%>'

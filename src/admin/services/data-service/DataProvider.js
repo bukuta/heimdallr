@@ -15,7 +15,7 @@ class DataProvider{
     if(query&&typeof(query)=='object'){
       urlobj.query=Object.assign(urlobj.query||{},query);
     }
-    if(urlobj.pathname.indexOf(this._base)==-1){
+    if(!options.noBase&&urlobj.pathname.indexOf(this._base)==-1){
       urlobj.pathname = pathlib.join(this._base,urlobj.pathname);
     }
     url = urllib.format(urlobj);
