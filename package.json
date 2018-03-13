@@ -1,4 +1,5 @@
 {
+  "version":"1.0.1",
   "name": "local-mock-console",
   "description": "monitor and config mock-server",
   "author": "c7h12@126.com",
