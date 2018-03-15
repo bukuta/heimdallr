@@ -1,6 +1,7 @@
 const shape = [
   {
     "name": "name",
+    "label":"名字create",
     "render": "input"
   },
   {

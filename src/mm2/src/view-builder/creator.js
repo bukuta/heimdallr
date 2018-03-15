@@ -19,7 +19,7 @@ import utils from './utils.js';
 function genItem({item,index,data,Entity},h,host){
   let key = item.name;
   let ComponentType = utils.getFieldRender(item.name, item.render, item);
-  let name = utils.getFieldName(item.name, Entity)||item.description||item.name;
+  let name = item.label||utils.getFieldName(item.name, Entity)||item.description||item.name;
   let valueType = utils.getFieldValueType(item.name,Entity);
   let value = utils.getFieldValue(item.name, Entity, data);
   console.warn('genItem',name,value,ComponentType);

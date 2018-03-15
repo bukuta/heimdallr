@@ -9,6 +9,7 @@ const entity = {
     },
     "name": {
       "type": "string",
+      "description":"名字",
       "x-mock": "@ctitle",
       "x-gen-shape": {
         "x-view": "text",

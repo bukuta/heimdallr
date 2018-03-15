@@ -18,14 +18,14 @@ export default function getRoutes() {
         path: 'simple-viewer',
         component: SimpleViewer,
       },
-      //{
-        //path: 'simple-editor',
-        //component: SimpleEditor,
-      //},
-      //{
-        //path: 'simple-creator',
-        //component: SimpleCreator,
-      //},
+      {
+        path: 'simple-editor',
+        component: SimpleEditor,
+      },
+      {
+        path: 'simple-creator',
+        component: SimpleCreator,
+      },
       //{
         //path: 'nested-viewer',
         //component: NestedViewer,

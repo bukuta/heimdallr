@@ -1,6 +1,7 @@
 const shape = [
   {
     "name": "id",
+    "label":"名字view",
     "render": "text"
   },
   {

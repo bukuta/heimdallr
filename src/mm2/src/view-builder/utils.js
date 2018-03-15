@@ -96,6 +96,7 @@ function getInitData(Entity){
   if(Entity.properties){
     init={};
     Object.entries(Entity.properties).forEach(([name,define])=>{
+      debug('define',name,define);
       if(({'object':1,'array':1})[define.type]){
         init[name]=getInitData(define);
       }else if(define.enum){
@@ -105,9 +106,9 @@ function getInitData(Entity){
       }
     })
   }else{
-    if(define.enum){
-      return define.enum[0];
-    }
+    //if(define.enum){
+      //return define.enum[0];
+    //}
   }
   return init;
 }

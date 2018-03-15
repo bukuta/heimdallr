@@ -9,7 +9,7 @@ import {ResourceModifier} from '$mould/view-builder';
 
 import Device from '$example/resources/device/entity.js';
 import deviceData from '$example/resources/device/data.js';
-import DeviceCreateShape from '$example/resources/device/shapes/view.js';
+import DeviceCreateShape from '$example/resources/device/shapes/create.js';
 import DeviceViewShape from '$example/resources/device/shapes/view.js';
 
 export default {
