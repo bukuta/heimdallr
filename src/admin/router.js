@@ -12,6 +12,12 @@ import Configs from '$pages/settings';
 import { routes as apiRoutes } from '$pages/apis';
 import { routes as testRoutes } from '$pages/test';
 
+import getRoutes from '$mouldtest/example/index.js';
+
+function renccc(){
+  return <div>renccc</div>
+}
+
 const routes = [
   // 定义路由
   {
@@ -54,9 +60,10 @@ const routes = [
   Object.assign(apiRoutes, {
     path: '/apis'
   }),
-  Object.assign(testRoutes, {
-    path: '/test'
-  }),
+  //Object.assign(testRoutes, {
+    //path: '/test'
+  //}),
+  getRoutes(),
   {
     path: '/*',
     component: Home,

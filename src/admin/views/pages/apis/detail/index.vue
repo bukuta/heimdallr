@@ -81,7 +81,7 @@
       </el-col>
     </el-row>
     <div v-if="detail.requestBody" >
-      <el-row v-for="[contentType,content] of Object.entries(detail.requestBody.content||{})">
+      <el-row :key="contentType" v-for="[contentType,content] of Object.entries(detail.requestBody.content||{})">
         <el-col class="request-schema">
           <pre>{{ content.schema|codeFormat }} </pre>
       </el-col>
