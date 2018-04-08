@@ -7,6 +7,8 @@ const child_process = require('child_process');
 
 const createUtil = require('../scripts/create.js');
 const buildUtil = require('../scripts/build.js');
+const previewUtil = require('../scripts/preview.js');
+const preview2Util = require('../scripts/preview2.js');
 
 debug('init');
 
@@ -31,18 +33,18 @@ program.command('preview <file>')
   .description('preview docs with openapi3.0 specs')
   .action(function(file, options) {
     debug('preview')
-    debug('file',file)
-    let preview = child_process.spawn(path.join(__dirname,'../scripts/preview.js'),[file]);
-    preview.stdout.on('data',data=>{
-      console.log(data.toString());
-    })
-    preview.stderr.on('data',data=>{
-      console.error(data.toString());
-    })
-    preview.on('close',code=>{
-      debug('close',code);
-    });
+    debug('file', file)
+    previewUtil.run(file);
   });
+
+program.command('preview2 <file>')
+  .description('preview docs with openapi3.0 specs')
+  .action(function(file, options) {
+    debug('preview')
+    debug('file', file)
+    preview2Util.run(file);
+  });
+
 
 program.command('mock')
   .description('run mock server')
@@ -53,7 +55,7 @@ program.command('mock')
 program.parse(process.argv);
 
 process.on('exit', function(err) {
-  debug('exit',err);
+  debug('exit', err);
 })
 
 if (!process.argv.slice(2).length) {

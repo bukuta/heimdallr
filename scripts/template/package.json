@@ -1,7 +1,7 @@
 {
   "name":"<%=name%>",
   "version":"<%=version%>",
-  "description":"<%=description%>",
+  "description":"<%=description.split('\n').join(' ')%>",
   "scripts":{
     "preview": "heimdallr preview dist/index.json",
     "build": "heimdallr build",

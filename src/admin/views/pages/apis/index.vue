@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-breadcrumb>
+    <el-breadcrumb style="margin-bottom: 20px;">
       <el-breadcrumb-item v-for="item of items"  :to="item.to">{{item.label}}</el-breadcrumb-item>
     </el-breadcrumb>
     <router-view @breadcrumb="onBreadcrumb">

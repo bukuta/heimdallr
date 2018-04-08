@@ -106,6 +106,8 @@ const specStore = {
       return Object.entries(schemas).map(([k, v]) => {
         v.name = k;
         return v;
+      }).filter(item=>{
+        return item.type=='object';
       });
     },
   },

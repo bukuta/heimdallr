@@ -1,106 +1,15 @@
 {
-  "name":"123",
-  "version":"123",
-  "description":"1
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-1231
-23
-123
-
-123
-",
+  "name":"aaa",
+  "version":"1.0.0",
+  "description":"aaa ",
   "scripts":{
     "preview": "heimdallr preview dist/index.json",
     "build": "heimdallr build",
     "mock": "heimdallr mock",
+    "watch": "nodemon --exec 'heimdallr build'"
   },
   "dependencies":{
-    "heimdallr": "1.0.0"
+    "heimdallr": "1.0.0",
+    "nodemon":"latest"
   }
 }

@@ -1,11 +1,6 @@
 <template>
   <div class="page-api-list">
-    <el-row style="padding: 20px 0;">
-      <el-col :span="24">
-        Filters
-      </el-col>
-    </el-row>
-    <el-row style="display:flex;">
+    <el-row style="margin-top: 10px; display:flex;">
       <el-col :span="2">
         TAGS:
       </el-col>
@@ -25,7 +20,7 @@
         </el-checkbox-group>
       </el-col>
     </el-row>
-    <el-row style="margin-top:10px;display:flex;">
+    <el-row style="margin-top:10px; margin-bottom: 10px; display:flex;">
       <el-col :span="2">
         SERVERS:
       </el-col>

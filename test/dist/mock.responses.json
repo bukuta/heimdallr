@@ -1,0 +1,176 @@
+{
+  "/admins": {
+    "get": {
+      "200": {
+        "description": "fetch admins",
+        "mock": {
+          "total": "@integer(0,100)",
+          "items|1-10": [
+            {
+              "id": "@integer(0,100000)",
+              "name": "@word",
+              "cname": "@cname",
+              "password": "",
+              "status": "0",
+              "creator": "@integer(0,100000)",
+              "createAt": "@datetime",
+              "updateAt": "@datetime"
+            }
+          ]
+        }
+      },
+      "401": {
+        "description": "fetch admins",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      }
+    },
+    "post": {
+      "201": {
+        "description": "create admin",
+        "mock": {
+          "_res": {
+            "status": 201,
+            "data": {
+              "id": "@integer(0,100000)",
+              "name": "@word",
+              "cname": "@cname",
+              "password": "",
+              "status": "0",
+              "creator": "@integer(0,100000)",
+              "createAt": "@datetime",
+              "updateAt": "@datetime"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "create admin",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      }
+    }
+  },
+  "/admins/{adminId}": {
+    "get": {
+      "200": {
+        "description": "fetch admin",
+        "mock": {
+          "id": "@integer(0,100000)",
+          "name": "@word",
+          "cname": "@cname",
+          "password": "",
+          "status": "0",
+          "creator": "@integer(0,100000)",
+          "createAt": "@datetime",
+          "updateAt": "@datetime"
+        }
+      },
+      "401": {
+        "description": "fetch admin",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      },
+      "404": {
+        "description": "fetch admin",
+        "mock": {
+          "_res": {
+            "status": 404,
+            "data": {}
+          }
+        }
+      }
+    },
+    "patch": {
+      "200": {
+        "description": "update admin",
+        "mock": {
+          "id": "@integer(0,100000)",
+          "name": "@word",
+          "cname": "@cname",
+          "password": "",
+          "status": "0",
+          "creator": "@integer(0,100000)",
+          "createAt": "@datetime",
+          "updateAt": "@datetime"
+        }
+      },
+      "401": {
+        "description": "update admin",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      },
+      "404": {
+        "description": "update admin",
+        "mock": {
+          "_res": {
+            "status": 404,
+            "data": {}
+          }
+        }
+      }
+    },
+    "delete": {
+      "204": {
+        "description": "delete admin",
+        "mock": {
+          "_res": {
+            "status": 204,
+            "data": {}
+          }
+        }
+      },
+      "401": {
+        "description": "delete admin",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      }
+    }
+  },
+  "/user": {
+    "get": {
+      "200": {
+        "description": "fetch User",
+        "mock": {
+          "id": "@integer(0,100000)",
+          "name": "@word",
+          "cname": "@cname",
+          "password": "",
+          "status": "0",
+          "creator": "@integer(0,100000)",
+          "createAt": "@datetime",
+          "updateAt": "@datetime"
+        }
+      },
+      "401": {
+        "description": "fetch User",
+        "mock": {
+          "_res": {
+            "status": 401,
+            "data": {}
+          }
+        }
+      }
+    }
+  }
+}

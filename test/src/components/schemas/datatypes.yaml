@@ -1,14 +1,5 @@
 ID:
   type: integer
-  x-p-type: int32
+  description: ID
   x-mock: '@integer(0,100000)'
 
-TOTAL:
-  type: integer
-  x-p-type: int32
-  x-mock: '@integer(10,100)'
-
-COMMITID:
-  type: string
-  x-p-type: string
-  x-mock: '@string'
