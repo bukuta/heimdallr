@@ -24,7 +24,7 @@
     "eventsource-polyfill": "^0.9.6",
     "graceful-fs": "^4.1.11",
     "install": "^0.10.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "mime": "^2.2.0",
     "vue": "2.4.4",
     "vue-echarts": "^2.4.1",
