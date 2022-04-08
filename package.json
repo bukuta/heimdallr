@@ -69,7 +69,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "mockjs": "^1.0.1-beta3",
-    "moment": "^2.19.1",
+    "moment": "^2.29.2",
     "opn": "^5.1.0",
     "optimize-css-assets-webpack-plugin": "^2.0.0",
     "ora": "^1.2.0",
